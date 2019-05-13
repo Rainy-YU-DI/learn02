@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+     <script type="text/javascript">
+     //console.log($);
+     $(function(){
+         $.ajax({
+             method:"GET",
+             url:"https://opendata.cwb.gov.tw/fileapi/v1/opendataapi/F-C0032-001",
+             data:{
+                Authorization:"CWB-8DBA8891-EA3A-49E6-83DD-2CB6AC72C0A6",
+			  		format:"JSON"
+             },
+             dataType:"JSON",
+             success:function(data){
+                 //console.log(data);
+
+                 var data01=data.cwbopendata.dataset.location;
+                 //console.log(data01);
+
+                 for(var i=0;i<data01.length;i++){
+                     var a=document.createElement("div");
+
+                     var MinT=data01[i].weatherElement.filter(function(currentNumber) {
+                          return currentNumber.elementName=="MinT";
+                    })[0].time;
+                    //console.log( MinT);
+
+                    
+
+                        var MaxT=data01[i].weatherElement.filter(function(currentNumber){
+                            return currentNumber.elementName=="MaxT";
+                        })[0].time;
+
+                       // function getTAverage(arry){
+                        var T_C=MinT.map(function(currentNumber,currentIndex,array){
+                            return parseInt(currentNumber.parameter.parameterName);
+                        })
+                         // console.log(T_C);
+
+                        var TSum = T_C.reduce(function(accumulator, currentValue, currentIndex, array){
+                                    return accumulator+currentValue;
+                        });
+                        // console.log(TSum);  
+
+                        var TAverage=(TSum/MinT.length).toFixed(2);
+                       // return TAverage;
+                        //console.log(TAverage); 
+                   // }
+
+                    a.textContent=data01[i].locationName+" "+ TAverage;
+                    document.body.appendChild(a);
+                 }
+
+                } 
+            })
+         })
+     </script>
+
+</head>
+<body>
+
+</body>
+</html>
